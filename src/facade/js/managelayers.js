@@ -67,6 +67,7 @@ export default class ManageLayers extends M.Plugin {
     parameters = parameters || {};
 
     this.config_ = parameters.config || {};
+
     /**
      * Params config control
      * Configuracion por defecto:
@@ -76,6 +77,15 @@ export default class ManageLayers extends M.Plugin {
      */
     this.params_ = parameters.params || {};
 
+    this.position_ = parameters.options.panel.position
+    if (this.position_ === 'TL' || this.position_ === 'BL') {
+      this.positionClass_ = 'left';
+    } else if (this.position_ === 'TR' || this.position_ === 'BR') {
+      this.positionClass_ = 'right';
+    } else {
+      this.position_ = 'TR'
+      this.positionClass_ = 'right';
+    }
     /**
      * Metadata from api.json
      * @private
@@ -98,7 +108,6 @@ export default class ManageLayers extends M.Plugin {
      */
     this.options_ = parameters.options || {};
 
-
     //FIXME: Correcion de partes del nucleo de mapea para el proceso de capabilities
     MapeaCoreExtension.overrideMapeaCore();
     //FIXME: Correcion nucleo mapea: Establecemos gestion de layers mediante IDs
@@ -119,34 +128,17 @@ export default class ManageLayers extends M.Plugin {
     this.map_ = map;
     //Creamos toolbar plugin: contiene todos los controles del plugin
     let html = this.createView(map);
-      //Configuracion de la toolbar
-      this.toolbar_ = {
-        target: html,
-        selector: '#toolbar-' + (ManageLayers.NAME).toLowerCase(),
-        selectorBtn: '.m-toolbar-buttons',
-        selectorContainer: '.m-toolbar-containers'
-      };
-      //Inicializar controles en toolbar cuando este cargado el mapa
-      this.map_.on(M.evt.COMPLETED, () => {
-        //Cargar si se indica configuracion para metadatos
-        //M.remote.get (url, data, options)
-        if (!M.utils.isNullOrEmpty(this.params_.metadata)) {
-          M.remote.get(this.params_.metadata, null, {
-            "jsonp": false
-          }).then((response) => {
-            if (response.error === false) {
-              //let data = response.text;
-              //let results = JSON.parse(data);
-            } else {
-              M.dialog.error("Se ha producido un error al cargar la configuración de metadatos", "Configuración metadatos");
-            }
-
-            //Cargamos controles
-            this.initControls();
-          });
-        } else //Cargamos controles
-          this.initControls();
-      });
+    //Configuracion de la toolbar
+    this.toolbar_ = {
+      target: html,
+      selector: '#toolbar-' + (ManageLayers.NAME).toLowerCase(),
+      selectorBtn: '.m-toolbar-buttons',
+      selectorContainer: '.m-toolbar-containers',
+    };
+    //Inicializar controles en toolbar cuando este cargado el mapa
+    this.map_.on(M.evt.COMPLETED, () => {
+      this.initControls();
+    });
   }
 
   getConfigControl(name) {
@@ -176,46 +168,56 @@ export default class ManageLayers extends M.Plugin {
     ctrol = new ThematicLayersControl(config.params, config.options);
     this.addControlToPlugin_(ctrol);
 
-    /* //Capas WMC
-    config = this.getConfigControl('wmcLayers');
-    ctrol = WMCLayersControl(config.params, config.options);
-    this.addControlToPlugin_(ctrol); */
-
-
     //Creamos para el plugin
     this.panel_ = this.getPanel_();
     // Asignar los controles al panel y el panel al mapa
     this.panel_.addControls(this.controls_);
+    this.map_.addPanels(this.panel_);
     this.panel_.on(M.evt.ADDED_TO_MAP, () =>
       this.fire(M.evt.ADDED_TO_MAP)
     );
-    this.map_.addPanels(this.panel_);
+
+    this.panel_.on(M.evt.SHOW, () => {
+      if (this.position_ == 'BR') {
+        if (document.getElementsByClassName('m-map-info').length > 0) {
+          document.getElementsByClassName('m-map-info')[0].style.display = 'none'
+        }
+        if (document.getElementsByClassName('m-location').length > 0) {
+          document.getElementsByClassName('m-location')[0].style.display = 'none'
+        }
+        if (document.getElementsByClassName('m-rotate').length > 0) {
+          document.getElementsByClassName('m-rotate')[0].style.display = 'none'
+        }
+      }
+      if (this.position_ == 'BL') {
+        if (document.getElementsByClassName('m-scaleline').length > 0) {
+          document.getElementsByClassName('m-scaleline')[0].style.display = 'none'
+        }
+      }
+    }
+    )
+    this.panel_.on(M.evt.HIDE, () => {
+      if (this.position_ == 'BR') {
+        if (document.getElementsByClassName('m-map-info').length > 0) {
+          document.getElementsByClassName('m-map-info')[0].style.display = 'block'
+        }
+        if (document.getElementsByClassName('m-location').length > 0) {
+          document.getElementsByClassName('m-location')[0].style.display = 'block'
+        }
+        if (document.getElementsByClassName('m-rotate').length > 0) {
+          document.getElementsByClassName('m-rotate')[0].style.display = 'block'
+        }
+      }
+      if (this.position_ == 'BL') {
+        if (document.getElementsByClassName('m-scaleline').length > 0) {
+          document.getElementsByClassName('m-scaleline')[0].style.display = 'block'
+        }
+      }
+    })
   }
 
   createView(map) {
-    if (!M.template.compileSync) { // JGL: retrocompatibilidad Mapea4
-      M.template.compileSync = (string, options) => {
-        let templateCompiled;
-        let templateVars = {};
-        let parseToHtml;
-        if (!M.utils.isUndefined(options)) {
-          templateVars = M.utils.extends(templateVars, options.vars);
-          parseToHtml = options.parseToHtml;
-        }
-        const templateFn = Handlebars.compile(string);
-        const htmlText = templateFn(templateVars);
-        if (parseToHtml !== false) {
-          templateCompiled = M.utils.stringToHtml(htmlText);
-        } else {
-          templateCompiled = htmlText;
-        }
-        return templateCompiled;
-      };
-    }
-
-    return M.template.compileSync(ManageLayers.TEMPLATE, {
-      //'jsonp' : true
-    });
+    return M.template.compileSync(ManageLayers.TEMPLATE, {});
   }
 
 
@@ -273,9 +275,9 @@ export default class ManageLayers extends M.Plugin {
 
     let panelOptions_ = {
       collapsible: true,
-      className: 'm-managelayers' + ((!M.utils.isNullOrEmpty(opt_.className)) ? (' ' + opt_.className) : ''),
+      className: `m-managelayers ${this.positionClass_}`,
       collapsedButtonClass: ((!M.utils.isNullOrEmpty(opt_.collapsedClass)) ? opt_.collapsedClass : 'g-cartografia-capas2'),
-      position: ((!M.utils.isNullOrEmpty(opt_.position)) ? opt_.position : M.ui.position.TR),
+      position: M.ui.position[this.position_],
       tooltip: ((!M.utils.isNullOrEmpty(opt_.tooltip)) ? opt_.tooltip : 'Gestor de capas')
     };
     return panelOptions_;
@@ -326,7 +328,7 @@ export default class ManageLayers extends M.Plugin {
    * @function
    * @api stable
    */
-  getMetadata(){
+  getMetadata() {
     return this.metadata_;
   }
 }
