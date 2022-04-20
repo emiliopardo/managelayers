@@ -1,37 +1,28 @@
+
 {
-  "url": {
-    "name": "ManageLayers",
-    "separator": "*"
-  },
-  "constructor": "M.plugin.ManageLayers",
-  "parameters": [],
-  "files": {
-    "ol": {
-      "scripts": [],
-      "styles": []
-    }
-  },
-  "metadata": {
-    "uuid_plugin": "",
-    "uuid_version_plugin": "",
-    "version_ficha_metadatos": "",
-    "name": "ManageLayers",
-    "description": "Description of the plugin",
-    "text": "A full text about plugin",
-    "version": "1.0.0",
-    "date": "",
-    "author": "",
-    "org": "",
-    "tags": "mapea,plugin",
-    "icon": "./facade/assets/icons/icons.svg",
-    "buttons": [
-      { "title": "", "description": "", "querySelector": "" },
-      { "title": "", "description": "", "querySelector": "" }
-    ],
-    "dependencies": {
-      "modules": ["", ""],
-      "plugins": [{ "uuid": "", "name": "" }],
-      "services": [{ "name": "", "description": "" }]
-    }
-  }
-}
+   "url": {
+     "name": "managelayers",
+     "separator": "*"
+   },
+   "constructor": "M.plugin.ManageLayers",
+   "parameters": [],
+   "files": {
+     "ol": {
+       "scripts": ["managelayers.ol.min.js"],
+       "styles": ["managelayers.ol.min.css"]
+     }
+   },
+   "metadata": {
+     "name": "ManageLayers",
+     "description": "TOC personalizable",
+     "text": "TOC personalizable con secciones para capas activas, de fondo y favoritas.",
+     "version": "1.0.0",
+     "date": "Abril, 2021",
+     "author": "",
+     "org": "Instituto de Estadística y Cartografía. Junta de Andalucía",
+     "tags": "mapea,plugin",
+     "icon": "./facade/assets/icons/icons.svg",
+     "centralized": false,
+     "compatibility":["5","6"]
+   }
+ }

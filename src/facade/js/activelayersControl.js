@@ -237,37 +237,37 @@ export default class ActiveLayersControl extends ManageLayersControl {
                     'overlayLayers': templateVariables
                 }
             });
-                //Antes de eliminar lista anterior sortable de capas activas
-                if (this.sortableList) {
-                    this.sortableList.destroy();
-                    this.sortableList = null;
-                }
-                // Eliminar eventos de accion anteriores
-                let actions = this.getControlContainer_().querySelectorAll('[class^=m-accion-]');
-                Array.from(actions).forEach(action => {
-                    action.removeEventListener('click', this.boundClickLayer_);
+            //Antes de eliminar lista anterior sortable de capas activas
+            if (this.sortableList) {
+                this.sortableList.destroy();
+                this.sortableList = null;
+            }
+            // Eliminar eventos de accion anteriores
+            let actions = this.getControlContainer_().querySelectorAll('[class^=m-accion-]');
+            Array.from(actions).forEach(action => {
+                action.removeEventListener('click', this.boundClickLayer_);
+            });
+            //Actualizar contenido
+            this.registerImgErrorEvents_(html);
+            this.getControlContainer_().innerHTML = html.innerHTML;
+            //Crear nuevo sortable para lista de capas activas
+            if (!this.sortableList) {
+                let itemSortable = this.getControlContainer_().querySelector('.sortable-activelayers');
+                this.sortableList = Sortable.create(itemSortable, {
+                    animation: 150,
+                    handle: '.m-accion-activelayers-order',
+                    onEnd: (evt) => {
+                        //Realizar movimiento de la capa
+                        this.moveLayer(evt.item, evt.oldIndex, evt.newIndex);
+                    }
                 });
-                //Actualizar contenido
-                this.registerImgErrorEvents_(html);
-                this.getControlContainer_().innerHTML = html.innerHTML;
-                //Crear nuevo sortable para lista de capas activas
-                if (!this.sortableList) {
-                    let itemSortable = this.getControlContainer_().querySelector('.sortable-activelayers');
-                    this.sortableList = Sortable.create(itemSortable, {
-                        animation: 150,
-                        handle: '.m-accion-activelayers-order',
-                        onEnd: (evt) => {
-                            //Realizar movimiento de la capa
-                            this.moveLayer(evt.item, evt.oldIndex, evt.newIndex);
-                        }
-                    });
-                }
-                // Annadimos los eventos al las acciones
-                actions = this.getControlContainer_().querySelectorAll('[class^=m-accion-]');
-                Array.from(actions).forEach(action => {
-                    action.addEventListener('click', this.boundClickLayer_);
-                });
-                this.deactivateLoading();
+            }
+            // Annadimos los eventos al las acciones
+            actions = this.getControlContainer_().querySelectorAll('[class^=m-accion-]');
+            Array.from(actions).forEach(action => {
+                action.addEventListener('click', this.boundClickLayer_);
+            });
+            this.deactivateLoading();
 
         });
 
@@ -281,8 +281,8 @@ export default class ActiveLayersControl extends ManageLayersControl {
         this.setConfigLayers();
 
         // gets base layers and overlay layers
-             
-        let overlayLayers = this.getImpl().getFilterLayerList(false); 
+
+        let overlayLayers = this.getImpl().getFilterLayerList(false);
         /************* */
         //let promises = overlayLayers.map(this.parseLayerForTemplate_, this);
         let promises = overlayLayers.map((ly) => this.parseLayerForTemplate_(ly));
@@ -323,7 +323,16 @@ export default class ActiveLayersControl extends ManageLayersControl {
 
             //Tendran informacion de capa solo los servicios OGC (WMTS, WMS y WFS)
             let infoLayer = ((layer.type === M.layer.type.WMS) || (layer.type === M.layer.type.WMTS) || (layer.type === M.layer.type.WFS));
+            let groupId = null;
+            let groupTitle = null;
+            let group = layer.layerGroup_;
+            if (group != null) {
+                groupId = group.id;
+                groupTitle = group.title
+            }
             let result = {
+                'groupId': groupId,
+                'groupTitle': groupTitle,
                 'metadata': (!M.utils.isNullOrEmpty(metadata)),
                 'infoLayer': infoLayer,
                 'origen': layer.options.origen,

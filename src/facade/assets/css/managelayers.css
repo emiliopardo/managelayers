@@ -61,7 +61,7 @@
 }
 
 .m-areas>div.m-area>div.m-panel.m-managelayers{
-    order: -100 !important;
+    order: -101 !important;
 }
 
 /* Boton para la carga del panel fuera del sidepanel */

@@ -1,12 +1,11 @@
 import ManageLayers from 'facade/managelayers';
-
 const map = M.map({
     container: 'mapjs',
     controls: ["overviewmap",
         "scale", "panzoom"
     ],
     layers: [],
-    wmcfiles: ["http://www.ideandalucia.es/visor/wmc/mapa_base.xml*Mapa"]
+    wmcfiles: ["http://factorylab01.ieca.junta-andalucia.es/andalucia/mapa_base_grupos.xml*Contexto*Mapa"]
 });
 
 // /** Plugin gestor de capas **/
@@ -259,5 +258,4 @@ var paramsPlugin = {
 };
 
 const mp = new ManageLayers(paramsPlugin);
-
 map.addPlugin(mp);
