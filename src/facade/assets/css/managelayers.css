@@ -48,6 +48,7 @@
     justify-content: space-around;
     align-content: space-around;
     align-items: stretch;
+    /* background-color: red; */
     height: 40px;
     box-sizing: border-box;
     background-color: #00897B;
@@ -58,10 +59,6 @@
 #toolbar-buttons-managelayers .m-toolbar-button {
     height: 35px;
     width: 35px;
-}
-
-.m-areas>div.m-area>div.m-panel.m-managelayers{
-    order: -100 !important;
 }
 
 /* Boton para la carga del panel fuera del sidepanel */
@@ -77,12 +74,29 @@ div.m-panel.m-managelayers.collapsed {
     height: 40px;
 }
 
+.m-areas>div.m-area>div.m-panel.m-managelayers.opened>button.m-panel-btn {
+    left: -40px;
+}
+
 .m-areas>div.m-area>div.m-panel.m-managelayers>button.m-panel-btn {
     background-color: #00897B;
+    position: absolute;
+    left: initial;
     color: #fff;
     z-index: 999999;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .2), 0 -1px 0 rgba(0, 0, 0, .02);
 }
+
+/* .m-areas>div.m-area>div.m-panel.m-managelayers>div.m-panel-controls {
+    max-height: 80vh;
+    opacity: 1;
+    -webkit-transition: max-width .75s ease 0s, max-height .5s ease 0s, opacity 1s ease .2s;
+    transition: max-width .75s ease 0s, max-height .5s ease 0s, opacity 1s ease .2s;
+    overflow-y: auto;
+    padding-right: 0px;
+} */
+
+/* fin */
 
 .m-tool-button.active {
     color: #FF9800 !important;
@@ -98,7 +112,7 @@ div.m-panel.m-managelayers.collapsed {
     order: 0;
     flex: 1 1 auto;
     align-self: auto;
-    height: 100vh;
+    max-height: calc(80vh - 81.5px);
     overflow-y: auto;
     position: relative;
 }
@@ -167,6 +181,7 @@ div.m-panel.m-managelayers.collapsed {
 }
 
 .m-toc-activelayers .toc-item-layer .toc-item-layer-header+div {
+    /* order: 0; */
     flex: 1 1 auto;
     align-self: auto;
     padding: 1ex;
@@ -192,6 +207,7 @@ div.m-panel.m-managelayers.collapsed {
     align-self: auto;
     text-overflow: ellipsis;
     overflow: hidden;
+    /* white-space: nowrap; */
     font-weight: bold;
 }
 
@@ -232,6 +248,8 @@ div.m-panel.m-managelayers.collapsed {
 
 .m-toc-activelayers .toc-item-layer .toc-item-layer-header button.m-accion-activelayers-collapse:before,
 .m-toc-activelayers .toc-item-layer .toc-item-layer-header button.m-accion-activelayers-rename:before {
+    /* width: 10px; */
+    /* height: 10px; */
     font-size: 14px !important;
 }
 
@@ -432,6 +450,10 @@ div.m-panel.m-managelayers.collapsed {
 
 /*************************** CAPAS FONDO **********************************/
 
+div#toolbar-container-baselayers {}
+
+.m-tool-container-baselayers {}
+
 div#toc-baselayers {
     display: flex;
     flex-direction: row;
@@ -460,6 +482,15 @@ div#toc-baselayers {
 }
 
 #toc-baselayers .box img {
+    /* position: absolute;
+    left: 0;
+    height: 100%;
+    width: auto;
+    -webkit-transition: all 300ms ease-out;
+    -moz-transition: all 300ms ease-out;
+    -o-transition: all 300ms ease-out;
+    -ms-transition: all 300ms ease-out;
+    transition: all 300ms ease-out; */
     display: block;
     position: relative;
     width: 100%;
@@ -468,6 +499,7 @@ div#toc-baselayers {
 
 #toc-baselayers .box .caption {
     background-color: rgba(0, 0, 0, 0.5);
+    /* position: absolute; */
     color: #fff;
     z-index: 100;
     -webkit-transition: all 300ms ease-out;
@@ -475,6 +507,7 @@ div#toc-baselayers {
     -o-transition: all 300ms ease-out;
     -ms-transition: all 300ms ease-out;
     transition: all 300ms ease-out;
+    /* left: 0; */
 }
 
 #toc-baselayers .box .caption h5 {
@@ -541,16 +574,23 @@ div#toc-baselayers {
 
 .m-areas>div.m-area>div.m-panel.m-managelayers>button.m-panel-btn {
     background-color: #00897B;
+    position: absolute;
+    left: initial;
     color: #fff;
     z-index: 999999;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
 }
 
+.m-areas>div.m-area>div.m-panel.m-managelayers.opened>button.m-panel-btn {
+    left: -40px;
+}
+
 @media only screen and (max-width: 768px) {
     .m-areas>div.m-area>div.m-panel.m-managelayers.opened>button.m-panel-btn {
         background-color: transparent;
+        position: absolute;
         right: 0;
-        float:left !important;
+        left: initial;
         color: #fff;
         z-index: 999999;
         box-shadow: none;
@@ -582,7 +622,7 @@ div#toc-baselayers {
     -webkit-transition: max-width .5s ease 0s, opacity .44s ease 0s;
     transition: max-width .5s ease 0s, opacity .44s ease 0s;
     background: white;
-    width: 400px !important;
+    width: 100%;
 }
 
 .m-managelayers-container>.results-panel>div.results {
@@ -592,12 +632,6 @@ div#toc-baselayers {
 
 .m-areas>div.m-area>div.m-panel.m-managelayers.opened {
     width: 440px;
-    height: 100vh;
-    margin: 0px !important;
-    position: relative;
-    float:right !important;
-    background-color: transparent;
-    box-shadow: none !important;
 }
 
 @media only screen and (max-width: 768px) {
