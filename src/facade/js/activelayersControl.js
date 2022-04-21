@@ -231,12 +231,162 @@ export default class ActiveLayersControl extends ManageLayersControl {
     renderPanel() {
         this.activateLoading();
         this.getTemplateVariables_().then((templateVariables) => {
-            let html = M.template.compileSync(ActiveLayersControl.TEMPLATE, {
-                //'jsonp' : true,
-                'vars': {
-                    'overlayLayers': templateVariables
+            // let templateVar = {
+            //     vars: {
+            //         overlayLayers: templateVariables
+            //     }
+            // }
+
+            let templateVar = {
+                "vars": {
+                   "layersGroups": [
+                      {
+                         "id": "GROUP_364",
+                         "title": "Grupo 1",
+                         "overlayLayers": [
+                            {
+                               "metadata": false,
+                               "infoLayer": true,
+                               "origen": "Inicial",
+                               "collapsed": true,
+                               "showStyles": false,
+                               "base": false,
+                               "visible": true,
+                               "id": "4_andalucia:01_Textos_Andalucia",
+                               "name": "andalucia:01_Textos_Andalucia",
+                               "title": "Textos Cartografía de Andalucia",
+                               "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Textos_Mapa_Andalucia.png",
+                               "outOfRange": false,
+                               "opacity": 1,
+                               "opacityPer": 100,
+                               "styles": [],
+                               "canEditName": false,
+                               "canRemove": false
+                            },
+                            {
+                               "metadata": false,
+                               "infoLayer": true,
+                               "origen": "Inicial",
+                               "collapsed": true,
+                               "showStyles": false,
+                               "base": false,
+                               "visible": true,
+                               "id": "3_andalucia:01_Cartografia_Andalucia",
+                               "name": "andalucia:01_Cartografia_Andalucia",
+                               "title": "Cartografía de Andalucia",
+                               "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Cartografia_Mapa_Andalucia.png",
+                               "outOfRange": false,
+                               "opacity": 1,
+                               "opacityPer": 100,
+                               "styles": [],
+                               "canEditName": false,
+                               "canRemove": false
+                            }
+                         ]
+                      },
+                      {
+                         "id": "GROUP_363",
+                         "title": "Grupo 2",
+                         "overlayLayers": [
+                            {
+                               "metadata": false,
+                               "infoLayer": true,
+                               "origen": "Inicial",
+                               "collapsed": true,
+                               "showStyles": false,
+                               "base": false,
+                               "visible": true,
+                               "id": "2_13_Textos_Cartografia_Contexto",
+                               "name": "13_Textos_Cartografia_Contexto",
+                               "title": "Textos Cartografía de Contexto",
+                               "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Textos_Contexto_Mapa_Andalucia.png",
+                               "outOfRange": false,
+                               "opacity": 1,
+                               "opacityPer": 100,
+                               "styles": [],
+                               "canEditName": false,
+                               "canRemove": false
+                            },
+                            {
+                               "metadata": false,
+                               "infoLayer": true,
+                               "origen": "Inicial",
+                               "collapsed": true,
+                               "showStyles": false,
+                               "base": false,
+                               "visible": true,
+                               "id": "1_andalucia:13_Cartografia_Contexto",
+                               "name": "andalucia:13_Cartografia_Contexto",
+                               "title": "Cartografía de Contexto",
+                               "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Cartografia_Contexto_Mapa_Andalucia.png",
+                               "outOfRange": false,
+                               "opacity": 1,
+                               "opacityPer": 100,
+                               "styles": [],
+                               "canEditName": false,
+                               "canRemove": false
+                            }
+                         ]
+                      }
+                   ],
+                   "overlayLayers": [
+                      {
+                         "groupId": "GROUP_364",
+                         "groupTitle": "Grupo 1",
+                         "metadata": false,
+                         "infoLayer": true,
+                         "origen": "Inicial",
+                         "collapsed": true,
+                         "showStyles": false,
+                         "base": false,
+                         "visible": true,
+                         "id": "2_13_Textos_Cartografia_Contexto",
+                         "name": "13_Textos_Cartografia_Contexto",
+                         "title": "Textos Cartografía de Contexto",
+                         "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Textos_Contexto_Mapa_Andalucia.png",
+                         "outOfRange": false,
+                         "opacity": 1,
+                         "opacityPer": 100,
+                         "styles": [],
+                         "canEditName": false,
+                         "canRemove": false
+                      },
+                      {
+                         "groupId": "GROUP_363",
+                         "groupTitle": "Grupo 2",
+                         "metadata": false,
+                         "infoLayer": true,
+                         "origen": "Inicial",
+                         "collapsed": true,
+                         "showStyles": false,
+                         "base": false,
+                         "visible": true,
+                         "id": "1_andalucia:13_Cartografia_Contexto",
+                         "name": "andalucia:13_Cartografia_Contexto",
+                         "title": "Cartografía de Contexto",
+                         "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Cartografia_Contexto_Mapa_Andalucia.png",
+                         "outOfRange": false,
+                         "opacity": 1,
+                         "opacityPer": 100,
+                         "styles": [],
+                         "canEditName": false,
+                         "canRemove": false
+                      }
+                   ]
                 }
-            });
+             }
+
+            let html = M.template.compileSync(ActiveLayersControl.TEMPLATE, templateVar)
+
+            // let html = M.template.compileSync(ActiveLayersControl.TEMPLATE, {
+            //     'vars': {
+            //         'overlayLayers': templateVariables
+            //     }
+            // });
+
+            console.log(templateVar)
+            
+
             //Antes de eliminar lista anterior sortable de capas activas
             if (this.sortableList) {
                 this.sortableList.destroy();
