@@ -331,8 +331,8 @@ export default class ActiveLayersControl extends ManageLayersControl {
                    ],
                    "overlayLayers": [
                       {
-                         "groupId": "GROUP_364",
-                         "groupTitle": "Grupo 1",
+                         "groupId": null,
+                         "groupTitle": null,
                          "metadata": false,
                          "infoLayer": true,
                          "origen": "Inicial",
@@ -340,38 +340,71 @@ export default class ActiveLayersControl extends ManageLayersControl {
                          "showStyles": false,
                          "base": false,
                          "visible": true,
-                         "id": "2_13_Textos_Cartografia_Contexto",
-                         "name": "13_Textos_Cartografia_Contexto",
-                         "title": "Textos Cartografía de Contexto",
-                         "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Textos_Contexto_Mapa_Andalucia.png",
+                         "id": "6_gridp_250",
+                         "name": "gridp_250",
+                         "title": "Malla de población en celdas de 250mx250m para el territorio de Andalucía",
+                         "legend": "http://www.juntadeandalucia.es/institutodeestadisticaycartografia/geoserver-ieca/grid/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=gridp_250&style=grid:stl_grid_poblacion_total",
                          "outOfRange": false,
                          "opacity": 1,
                          "opacityPer": 100,
                          "styles": [],
                          "canEditName": false,
                          "canRemove": false
-                      },
-                      {
-                         "groupId": "GROUP_363",
-                         "groupTitle": "Grupo 2",
-                         "metadata": false,
+                     },
+                     {
+                         "groupId": null,
+                         "groupTitle": null,
+                         "metadata": "http://www.ideandalucia.es/catalogo/inspire/srv/spa/csw?Service=CSW&version=2.0.2&Request=GetRecordById&elementSetName=full&ID=5d0b5e73-c924-401d-ab72-ae0fa597f4be_200032_es",
                          "infoLayer": true,
                          "origen": "Inicial",
                          "collapsed": true,
                          "showStyles": false,
                          "base": false,
                          "visible": true,
-                         "id": "1_andalucia:13_Cartografia_Contexto",
-                         "name": "andalucia:13_Cartografia_Contexto",
-                         "title": "Cartografía de Contexto",
-                         "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Cartografia_Contexto_Mapa_Andalucia.png",
+                         "id": "5_lineas_LLMM",
+                         "name": "lineas_LLMM",
+                         "title": "Líneas Limite de Andalucía",
+                         "legend": "https://www.juntadeandalucia.es/institutodeestadisticaycartografia/wms/lineaslimite?language=spa&version=1.1.0&service=WMS&request=GetLegendGraphic&layer=LineasLimite&format=image/png&STYLE=default",
                          "outOfRange": false,
                          "opacity": 1,
                          "opacityPer": 100,
-                         "styles": [],
+                         "styles": [
+                             {
+                                 "Name": "default",
+                                 "Title": "default",
+                                 "LegendURL": [
+                                     {
+                                         "Format": "image/png",
+                                         "OnlineResource": "https://www.juntadeandalucia.es/institutodeestadisticaycartografia/wms/lineaslimite?language=spa&version=1.1.0&service=WMS&request=GetLegendGraphic&layer=lineas_LLMM&format=image/png&STYLE=default",
+                                         "size": [
+                                             143,
+                                             22
+                                         ]
+                                     }
+                                 ],
+                                 "id": "5_lineas_LLMM",
+                                 "selected": false
+                             },
+                             {
+                                 "Name": "default",
+                                 "Title": "default",
+                                 "LegendURL": [
+                                     {
+                                         "Format": "image/png",
+                                         "OnlineResource": "https://www.juntadeandalucia.es/institutodeestadisticaycartografia/wms/lineaslimite?language=spa&version=1.1.0&service=WMS&request=GetLegendGraphic&layer=LineasLimite&format=image/png&STYLE=default",
+                                         "size": [
+                                             160,
+                                             66
+                                         ]
+                                     }
+                                 ],
+                                 "id": "5_lineas_LLMM",
+                                 "selected": true
+                             }
+                         ],
                          "canEditName": false,
                          "canRemove": false
-                      }
+                     }
                    ]
                 }
              }
