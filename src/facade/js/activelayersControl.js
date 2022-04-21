@@ -323,6 +323,7 @@ export default class ActiveLayersControl extends ManageLayersControl {
 
             //Tendran informacion de capa solo los servicios OGC (WMTS, WMS y WFS)
             let infoLayer = ((layer.type === M.layer.type.WMS) || (layer.type === M.layer.type.WMTS) || (layer.type === M.layer.type.WFS));
+
             let groupId = null;
             let groupTitle = null;
             let group = layer.layerGroup_;
@@ -330,6 +331,7 @@ export default class ActiveLayersControl extends ManageLayersControl {
                 groupId = group.id;
                 groupTitle = group.title
             }
+
             let result = {
                 'groupId': groupId,
                 'groupTitle': groupTitle,
