@@ -48,7 +48,6 @@
     justify-content: space-around;
     align-content: space-around;
     align-items: stretch;
-    /* background-color: red; */
     height: 40px;
     box-sizing: border-box;
     background-color: #00897B;
@@ -86,17 +85,6 @@ div.m-panel.m-managelayers.collapsed {
     z-index: 999999;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .2), 0 -1px 0 rgba(0, 0, 0, .02);
 }
-
-/* .m-areas>div.m-area>div.m-panel.m-managelayers>div.m-panel-controls {
-    max-height: 80vh;
-    opacity: 1;
-    -webkit-transition: max-width .75s ease 0s, max-height .5s ease 0s, opacity 1s ease .2s;
-    transition: max-width .75s ease 0s, max-height .5s ease 0s, opacity 1s ease .2s;
-    overflow-y: auto;
-    padding-right: 0px;
-} */
-
-/* fin */
 
 .m-tool-button.active {
     color: #FF9800 !important;
@@ -158,6 +146,42 @@ div.m-panel.m-managelayers.collapsed {
     align-items: stretch;
 }
 
+.m-toc-activelayers .toc-item-group {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: stretch;
+}
+
+.m-toc-activelayers .toc-item-group .toc-item-group-header {
+    background-color: #eee;
+    border: 1px solid #ccc;
+}
+
+.m-toc-activelayers .toc-item-group .toc-item-group-header>div.layer-group-name {
+    flex: 1 0 auto;
+    align-self: center;
+    font-weight: 700;
+}
+
+.m-toc-activelayers .toc-item-group button.m-accion-activelayers-collapse:before {
+    font-size: 14px !important;
+}
+
+
+.m-toc-activelayers .toc-item-group button.m-accion-activegroups-collapse:before {
+    font-size: 14px !important;
+}
+
+.m-toc-activelayers .toc-item-layer .toc-item-layer-header button.m-accion-activegroups-collapse:before,
+.m-toc-activelayers .toc-item-layer .toc-item-layer-header button.m-accion-activegroups-rename:before {
+    font-size: 14px !important;
+}
+
+
+
 .m-toc-activelayers .toc-item-layer {
     order: 0;
     flex: 0 1 auto;
@@ -180,8 +204,19 @@ div.m-panel.m-managelayers.collapsed {
     background-color: #fbfbfb;
 }
 
+.m-toc-activelayers .toc-item-layer .toc-item-layer-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-content: stretch;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 5px 2px;
+    background-color: #fbfbfb;
+}
+
 .m-toc-activelayers .toc-item-layer .toc-item-layer-header+div {
-    /* order: 0; */
     flex: 1 1 auto;
     align-self: auto;
     padding: 1ex;
@@ -207,7 +242,6 @@ div.m-panel.m-managelayers.collapsed {
     align-self: auto;
     text-overflow: ellipsis;
     overflow: hidden;
-    /* white-space: nowrap; */
     font-weight: bold;
 }
 
@@ -248,8 +282,6 @@ div.m-panel.m-managelayers.collapsed {
 
 .m-toc-activelayers .toc-item-layer .toc-item-layer-header button.m-accion-activelayers-collapse:before,
 .m-toc-activelayers .toc-item-layer .toc-item-layer-header button.m-accion-activelayers-rename:before {
-    /* width: 10px; */
-    /* height: 10px; */
     font-size: 14px !important;
 }
 
@@ -450,10 +482,6 @@ div.m-panel.m-managelayers.collapsed {
 
 /*************************** CAPAS FONDO **********************************/
 
-div#toolbar-container-baselayers {}
-
-.m-tool-container-baselayers {}
-
 div#toc-baselayers {
     display: flex;
     flex-direction: row;
@@ -482,15 +510,6 @@ div#toc-baselayers {
 }
 
 #toc-baselayers .box img {
-    /* position: absolute;
-    left: 0;
-    height: 100%;
-    width: auto;
-    -webkit-transition: all 300ms ease-out;
-    -moz-transition: all 300ms ease-out;
-    -o-transition: all 300ms ease-out;
-    -ms-transition: all 300ms ease-out;
-    transition: all 300ms ease-out; */
     display: block;
     position: relative;
     width: 100%;
@@ -499,7 +518,7 @@ div#toc-baselayers {
 
 #toc-baselayers .box .caption {
     background-color: rgba(0, 0, 0, 0.5);
-    /* position: absolute; */
+
     color: #fff;
     z-index: 100;
     -webkit-transition: all 300ms ease-out;
@@ -507,7 +526,6 @@ div#toc-baselayers {
     -o-transition: all 300ms ease-out;
     -ms-transition: all 300ms ease-out;
     transition: all 300ms ease-out;
-    /* left: 0; */
 }
 
 #toc-baselayers .box .caption h5 {
@@ -646,6 +664,7 @@ div#toc-baselayers {
         z-index: 10000;
         overflow: auto;
     }
+
     #toolbar-containers-managelayers {
         max-height: calc(100vh - 81.5px);
     }
