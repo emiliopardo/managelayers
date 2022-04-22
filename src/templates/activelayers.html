@@ -1,86 +1,209 @@
 <div id="tool-activelayers">
 	<div id="toc-activelayers" class="m-toc-activelayers sortable-activelayers">
-		{{#each overlayLayers}}
-		<div id="tocLayer_{{id}}" data-id="{{id}}" class="toc-item-layer">
-			<div id="titleTocLayer_{{id}}" class="toc-item-layer-header {{#if outOfRange}}out-of-range{{/if}}{{#if visible}} visible{{/if}}">
-				<div class="m-area-accion-activelayers-collapse">
-					<button data-id="{{id}}" class="m-accion-activelayers-collapse {{#if collapsed}}g-cartografia-flecha-abajo2{{else}}g-cartografia-flecha-arriba2{{/if}}"
-					 title="Opciones de capa"></button>
-				</div>
-				<div class="m-area-title">
-					<div id="textTitleLayer_{{id}}" title="{{title}}" class="m-title">{{groupTitle}} - {{title}}</div>
-					{{#if canEditName}}
-					<div class="m-button">
-						<button data-id="{{id}}" class="m-accion-activelayers-rename g-cartografia-editar" title="Cambiar nombre"></button>
-					</div>
-					{{/if}}
-				</div>
-				<div class="m-area-activate" title="Activar/Desactivar capa">
-					<input type="checkbox" data-id="{{id}}" class="m-accion-activelayers-activate" {{#if visible}} checked{{/if}}> </input>
-					 </div> <div class="m-area-origin">
-					<span>{{origen}}</span>
-				</div>
-				<div class="m-area-order-hook" title="Orden de capas">
-					<div class="m-accion-activelayers-order">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-							<path d="M25 0c-.254 0-.523.086-.719.281l-7 7a1.005 1.005 0 0 0-.218 1.094c.156.371.535.625.937.625h14.031c.551 0 1-.45 1-1a1.01 1.01 0 0 0-.437-.813L25.719.282A1.015 1.015 0 0 0 25 0zM2 13v4h46v-4zm0 10v4h46v-4zm0 10v4h46v-4zm16 8c-.402 0-.781.25-.938.625-.156.375-.066.809.22 1.094l7 7c.195.195.46.281.718.281.258 0 .523-.086.719-.281l7-7c.285-.285.375-.719.218-1.094A1.023 1.023 0 0 0 32 41z" />
-						</svg>
-					</div>
+		{{#each layersGroups}}
+		<div id="tocGroup_{{id}}" data-id="{{id}}" class="toc-item-group">
+			<div class="toc-item-group-header">
+				<div data-group="{{id}}" class="layer-group-name">
+					<!-- <button data-id="{{id}}"-->
+					<button
+						class="m-accion-activegroups-collapse {{#if collapsed}}g-cartografia-flecha-abajo2{{else}}g-cartografia-flecha-arriba2{{/if}} button-group"
+						title="Lista de capas"></button>
+					<span>{{title}}</span>
 				</div>
 			</div>
-			<div id="optionsTocLayer_{{id}}" class="toc-item-layer-options{{#if collapsed}} dNone{{/if}}">
-				<div class="layer-option-row">
-					<div class="transparency-control">
-						<input type="range" data-id="{{id}}" title="Nivel de transparencia" class="m-accion-activelayers-transparency"
-						 min="0" max="1" step="0.1" value="{{opacity}}" {{#unless visible}} disabled {{/unless}} {{#if outOfRange}}
-						 disabled{{/if}}/> <span class="transparency-percentage">{{opacityPer}}%</span>
+			{{#each overlayLayers}}
+			<div id="tocLayer_{{id}}" data-id="{{id}}" class="toc-item-layer">
+				<div id="titleTocLayer_{{id}}"
+					class="toc-item-layer-header {{#if outOfRange}}out-of-range{{/if}}{{#if visible}} visible{{/if}}">
+					<div class="m-area-accion-activelayers-collapse">
+						<button data-id="{{id}}"
+							class="m-accion-activelayers-collapse {{#if collapsed}}g-cartografia-flecha-abajo2{{else}}g-cartografia-flecha-arriba2{{/if}}"
+							title="Opciones de capa"></button>
 					</div>
-					{{#gt styles.length 1}}
-					<div>
-						<button data-id="{{id}}" class="m-accion-activelayers-showstyles g-cartografia-lista" title="Estilos de la capa"></button>
-					</div>
-					{{/gt}} {{#if metadata}}
-					<div>
-						<button data-id="{{id}}" class="m-accion-activelayers-metadata g-cartografia-texto" title="Ver metadatos"></button>
-					</div>
-					{{/if}} {{#if infoLayer}}
-					<div>
-						<button data-id="{{id}}" class="m-accion-activelayers-info g-cartografia-info" title="Información de la capa"></button>
-					</div>
-					{{/if}}
-					{{#if canRemove}}
-					<div>
-						<!-- <span data-id="{{id}}" class="m-accion-activelayers-remove g-cartografia-papelera"></span> -->
-						<button data-id="{{id}}" class="m-accion-activelayers-remove g-cartografia-papelera" title="Eliminar capa"></button>
-					</div>
-					{{/if}}
-				</div>
-				<div class="layer-option-row">
-					<div class="legend">
-						<h3>Leyenda</h3>
-						<img data-id="{{id}}" src="{{legend}}"></img>
-					</div>
-				</div>
-
-				<div class="layer-option-row">
-					<div id="stylesTocLayer_{{id}}" class="{{#unless showStyles}}dNone{{/unless}}">
-						<h3>Estilos de capa</h3>
-						{{#each styles}}
-						<div class="m-accion-activelayers-styles">
-							<input id="{{@index}}-{{id}}" data-id="{{id}}" type="radio" class="m-accion-activelayers-activestyle"
-							 {{#if selected}} checked{{/if}} name="{{id}}" value="{{@index}}" />
-							<label for="{{@index}}-{{id}}">{{Title}}</label>
+					<div class="m-area-title">
+						<div id="textTitleLayer_{{id}}" title="{{title}}" class="m-title">{{title}}
 						</div>
-						{{/each}}
+						{{#if canEditName}}
+						<div class="m-button">
+							<button data-id="{{id}}" class="m-accion-activelayers-rename g-cartografia-editar"
+								title="Cambiar nombre"></button>
+						</div>
+						{{/if}}
+					</div>
+					<div class="m-area-activate" title="Activar/Desactivar capa">
+						<input type="checkbox" data-id="{{id}}" class="m-accion-activelayers-activate" {{#if visible}}
+							checked{{/if}}> </input>
+					</div>
+					<div class="m-area-origin">
+						<span>{{origen}}</span>
+					</div>
+					<!-- <div class="m-area-order-hook" title="Orden de capas">
+						<div class="m-accion-activelayers-order">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+								<path
+									d="M25 0c-.254 0-.523.086-.719.281l-7 7a1.005 1.005 0 0 0-.218 1.094c.156.371.535.625.937.625h14.031c.551 0 1-.45 1-1a1.01 1.01 0 0 0-.437-.813L25.719.282A1.015 1.015 0 0 0 25 0zM2 13v4h46v-4zm0 10v4h46v-4zm0 10v4h46v-4zm16 8c-.402 0-.781.25-.938.625-.156.375-.066.809.22 1.094l7 7c.195.195.46.281.718.281.258 0 .523-.086.719-.281l7-7c.285-.285.375-.719.218-1.094A1.023 1.023 0 0 0 32 41z" />
+							</svg>
+						</div>
+					</div> -->
+				</div>
+				<div id="optionsTocLayer_{{id}}" class="toc-item-layer-options{{#if collapsed}} dNone{{/if}}">
+					<div class="layer-option-row">
+						<div class="transparency-control">
+							<input type="range" data-id="{{id}}" title="Nivel de transparencia"
+								class="m-accion-activelayers-transparency" min="0" max="1" step="0.1"
+								value="{{opacity}}" {{#unless visible}} disabled {{/unless}} {{#if outOfRange}}
+								disabled{{/if}} /> <span class="transparency-percentage">{{opacityPer}}%</span>
+						</div>
+						{{#gt styles.length 1}}
+						<div>
+							<button data-id="{{id}}" class="m-accion-activelayers-showstyles g-cartografia-lista"
+								title="Estilos de la capa"></button>
+						</div>
+						{{/gt}} {{#if metadata}}
+						<div>
+							<button data-id="{{id}}" class="m-accion-activelayers-metadata g-cartografia-texto"
+								title="Ver metadatos"></button>
+						</div>
+						{{/if}} {{#if infoLayer}}
+						<div>
+							<button data-id="{{id}}" class="m-accion-activelayers-info g-cartografia-info"
+								title="Información de la capa"></button>
+						</div>
+						{{/if}}
+						{{#if canRemove}}
+						<div>
+							<!-- <span data-id="{{id}}" class="m-accion-activelayers-remove g-cartografia-papelera"></span> -->
+							<button data-id="{{id}}" class="m-accion-activelayers-remove g-cartografia-papelera"
+								title="Eliminar capa"></button>
+						</div>
+						{{/if}}
+					</div>
+					<div class="layer-option-row">
+						<div class="legend">
+							<h3>Leyenda</h3>
+							<img data-id="{{id}}" src="{{legend}}"></img>
+						</div>
+					</div>
+					<div class="layer-option-row">
+						<div id="stylesTocLayer_{{id}}" class="{{#unless showStyles}}dNone{{/unless}}">
+							<h3>Estilos de capa</h3>
+							{{#each styles}}
+							<div class="m-accion-activelayers-styles">
+								<input id="{{@index}}-{{id}}" data-id="{{id}}" type="radio"
+									class="m-accion-activelayers-activestyle" {{#if selected}} checked{{/if}}
+									name="{{id}}" value="{{@index}}" />
+								<label for="{{@index}}-{{id}}">{{Title}}</label>
+							</div>
+							{{/each}}
+						</div>
 					</div>
 				</div>
-
 			</div>
-		</div>
-		{{else}}
-		<div class="info">
-			<span>No existe ninguna capa activa</span>
+			{{/each}}
 		</div>
 		{{/each}}
+		<div id="tocGroup_Others" data-id="{{id}}" class="toc-item-group">
+			<div class="toc-item-group-header">
+				<div data-group="otrasCapas" class="layer-group-name">
+					<button
+						class="m-accion-activegroups-collapse {{#if collapsed}}g-cartografia-flecha-abajo2{{else}}g-cartografia-flecha-arriba2{{/if}} button-group"
+						title="Lista de capas"></button>
+					<span>Otras Capas</span>
+				</div>
+			</div>
+			{{#each overlayLayers}}
+			<div id="tocLayer_{{id}}" data-id="{{id}}" class="toc-item-layer">
+				<div id="titleTocLayer_{{id}}"
+					class="toc-item-layer-header {{#if outOfRange}}out-of-range{{/if}}{{#if visible}} visible{{/if}}">
+					<div class="m-area-accion-activelayers-collapse">
+						<button data-id="{{id}}"
+							class="m-accion-activelayers-collapse {{#if collapsed}}g-cartografia-flecha-abajo2{{else}}g-cartografia-flecha-arriba2{{/if}}"
+							title="Opciones de capa"></button>
+					</div>
+					<div class="m-area-title">
+						<div id="textTitleLayer_{{id}}" title="{{title}}" class="m-title">{{title}}
+						</div>
+						{{#if canEditName}}
+						<div class="m-button">
+							<button data-id="{{id}}" class="m-accion-activelayers-rename g-cartografia-editar"
+								title="Cambiar nombre"></button>
+						</div>
+						{{/if}}
+					</div>
+					<div class="m-area-activate" title="Activar/Desactivar capa">
+						<input type="checkbox" data-id="{{id}}" class="m-accion-activelayers-activate" {{#if visible}}
+							checked{{/if}}> </input>
+					</div>
+					<div class="m-area-origin">
+						<span>{{origen}}</span>
+					</div>
+					<!-- <div class="m-area-order-hook" title="Orden de capas">
+						<div class="m-accion-activelayers-order">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+								<path
+									d="M25 0c-.254 0-.523.086-.719.281l-7 7a1.005 1.005 0 0 0-.218 1.094c.156.371.535.625.937.625h14.031c.551 0 1-.45 1-1a1.01 1.01 0 0 0-.437-.813L25.719.282A1.015 1.015 0 0 0 25 0zM2 13v4h46v-4zm0 10v4h46v-4zm0 10v4h46v-4zm16 8c-.402 0-.781.25-.938.625-.156.375-.066.809.22 1.094l7 7c.195.195.46.281.718.281.258 0 .523-.086.719-.281l7-7c.285-.285.375-.719.218-1.094A1.023 1.023 0 0 0 32 41z" />
+							</svg>
+						</div>
+					</div> -->
+				</div>
+				<div id="optionsTocLayer_{{id}}" class="toc-item-layer-options{{#if collapsed}} dNone{{/if}}">
+					<div class="layer-option-row">
+						<div class="transparency-control">
+							<input type="range" data-id="{{id}}" title="Nivel de transparencia"
+								class="m-accion-activelayers-transparency" min="0" max="1" step="0.1"
+								value="{{opacity}}" {{#unless visible}} disabled {{/unless}} {{#if outOfRange}}
+								disabled{{/if}} /> <span class="transparency-percentage">{{opacityPer}}%</span>
+						</div>
+						{{#gt styles.length 1}}
+						<div>
+							<button data-id="{{id}}" class="m-accion-activelayers-showstyles g-cartografia-lista"
+								title="Estilos de la capa"></button>
+						</div>
+						{{/gt}} {{#if metadata}}
+						<div>
+							<button data-id="{{id}}" class="m-accion-activelayers-metadata g-cartografia-texto"
+								title="Ver metadatos"></button>
+						</div>
+						{{/if}} {{#if infoLayer}}
+						<div>
+							<button data-id="{{id}}" class="m-accion-activelayers-info g-cartografia-info"
+								title="Información de la capa"></button>
+						</div>
+						{{/if}}
+						{{#if canRemove}}
+						<div>
+							<!-- <span data-id="{{id}}" class="m-accion-activelayers-remove g-cartografia-papelera"></span> -->
+							<button data-id="{{id}}" class="m-accion-activelayers-remove g-cartografia-papelera"
+								title="Eliminar capa"></button>
+						</div>
+						{{/if}}
+					</div>
+					<div class="layer-option-row">
+						<div class="legend">
+							<h3>Leyenda</h3>
+							<img data-id="{{id}}" src="{{legend}}"></img>
+						</div>
+					</div>
+					<div class="layer-option-row">
+						<div id="stylesTocLayer_{{id}}" class="{{#unless showStyles}}dNone{{/unless}}">
+							<h3>Estilos de capa</h3>
+							{{#each styles}}
+							<div class="m-accion-activelayers-styles">
+								<input id="{{@index}}-{{id}}" data-id="{{id}}" type="radio"
+									class="m-accion-activelayers-activestyle" {{#if selected}} checked{{/if}}
+									name="{{id}}" value="{{@index}}" />
+								<label for="{{@index}}-{{id}}">{{Title}}</label>
+							</div>
+							{{/each}}
+						</div>
+					</div>
+				</div>
+			</div>
+			{{else}}
+			<div class="info">
+				<span>No existe ninguna capa activa</span>
+			</div>
+			{{/each}}
+		</div>
 	</div>
 </div>
