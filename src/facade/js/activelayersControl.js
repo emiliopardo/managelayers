@@ -80,6 +80,27 @@ export default class ActiveLayersControl extends ManageLayersControl {
         content.addEventListener('input', (evt) => this.clickLayerSlider(evt));
     }
 
+    clickButtonGroup(evt) {
+        let group = evt.target.parentNode.getAttribute("data-group")
+        evt.target.classList.toggle("g-cartografia-flecha-arriba2")
+        evt.target.classList.toggle("g-cartografia-flecha-abajo2")
+        if (group != "otrasCapas") {
+            let selectedGroup = this.mapeaLayerGroup.find(x => x.id === group)
+            let layersInGroup = selectedGroup.overlayLayers
+            for (let index = 0; index < layersInGroup.length; index++) {
+                const element = layersInGroup[index];
+                document.getElementById("titleTocLayer_" + element.id).classList.toggle("dNone");
+                document.getElementById("titleTocLayer_" + element.id).classList.toggle("visible");
+            }
+        } else {
+            for (let index = 0; index < this.mapeaOverlayLayers.length; index++) {
+                const element = this.mapeaOverlayLayers[index];
+                document.getElementById("titleTocLayer_" + element.id).classList.toggle("dNone");
+                document.getElementById("titleTocLayer_" + element.id).classList.toggle("visible");
+            }
+        }
+    }
+
     clickLayerSlider(evt) {
         evt = (evt || window.event);
         if (!M.utils.isNullOrEmpty(evt.target)) {
@@ -198,6 +219,9 @@ export default class ActiveLayersControl extends ManageLayersControl {
                     this.resetOptionsManageLayers(layer);
                     this.removeLayers(layer);
                 }
+            } else {
+                //logica para evento click en botones de grupos
+                this.clickButtonGroup(evt)
             }
         }
     }
@@ -231,195 +255,7 @@ export default class ActiveLayersControl extends ManageLayersControl {
     renderPanel() {
         this.activateLoading();
         this.getTemplateVariables_().then((templateVariables) => {
-            // let templateVar = {
-            //     vars: {
-            //         overlayLayers: templateVariables
-            //     }
-            // }
-
-            let templateVar = {
-                "vars": {
-                   "layersGroups": [
-                      {
-                         "id": "GROUP_364",
-                         "title": "Grupo 1",
-                         "overlayLayers": [
-                            {
-                               "metadata": false,
-                               "infoLayer": true,
-                               "origen": "Inicial",
-                               "collapsed": true,
-                               "showStyles": false,
-                               "base": false,
-                               "visible": true,
-                               "id": "4_andalucia:01_Textos_Andalucia",
-                               "name": "andalucia:01_Textos_Andalucia",
-                               "title": "Textos Cartografía de Andalucia",
-                               "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Textos_Mapa_Andalucia.png",
-                               "outOfRange": false,
-                               "opacity": 1,
-                               "opacityPer": 100,
-                               "styles": [],
-                               "canEditName": false,
-                               "canRemove": false
-                            },
-                            {
-                               "metadata": false,
-                               "infoLayer": true,
-                               "origen": "Inicial",
-                               "collapsed": true,
-                               "showStyles": false,
-                               "base": false,
-                               "visible": true,
-                               "id": "3_andalucia:01_Cartografia_Andalucia",
-                               "name": "andalucia:01_Cartografia_Andalucia",
-                               "title": "Cartografía de Andalucia",
-                               "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Cartografia_Mapa_Andalucia.png",
-                               "outOfRange": false,
-                               "opacity": 1,
-                               "opacityPer": 100,
-                               "styles": [],
-                               "canEditName": false,
-                               "canRemove": false
-                            }
-                         ]
-                      },
-                      {
-                         "id": "GROUP_363",
-                         "title": "Grupo 2",
-                         "overlayLayers": [
-                            {
-                               "metadata": false,
-                               "infoLayer": true,
-                               "origen": "Inicial",
-                               "collapsed": true,
-                               "showStyles": false,
-                               "base": false,
-                               "visible": true,
-                               "id": "2_13_Textos_Cartografia_Contexto",
-                               "name": "13_Textos_Cartografia_Contexto",
-                               "title": "Textos Cartografía de Contexto",
-                               "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Textos_Contexto_Mapa_Andalucia.png",
-                               "outOfRange": false,
-                               "opacity": 1,
-                               "opacityPer": 100,
-                               "styles": [],
-                               "canEditName": false,
-                               "canRemove": false
-                            },
-                            {
-                               "metadata": false,
-                               "infoLayer": true,
-                               "origen": "Inicial",
-                               "collapsed": true,
-                               "showStyles": false,
-                               "base": false,
-                               "visible": true,
-                               "id": "1_andalucia:13_Cartografia_Contexto",
-                               "name": "andalucia:13_Cartografia_Contexto",
-                               "title": "Cartografía de Contexto",
-                               "legend": "https://www.ideandalucia.es/visor/leyendas/leyenda_Cartografia_Contexto_Mapa_Andalucia.png",
-                               "outOfRange": false,
-                               "opacity": 1,
-                               "opacityPer": 100,
-                               "styles": [],
-                               "canEditName": false,
-                               "canRemove": false
-                            }
-                         ]
-                      }
-                   ],
-                   "overlayLayers": [
-                      {
-                         "groupId": null,
-                         "groupTitle": null,
-                         "metadata": false,
-                         "infoLayer": true,
-                         "origen": "Inicial",
-                         "collapsed": true,
-                         "showStyles": false,
-                         "base": false,
-                         "visible": true,
-                         "id": "6_gridp_250",
-                         "name": "gridp_250",
-                         "title": "Malla de población en celdas de 250mx250m para el territorio de Andalucía",
-                         "legend": "http://www.juntadeandalucia.es/institutodeestadisticaycartografia/geoserver-ieca/grid/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=gridp_250&style=grid:stl_grid_poblacion_total",
-                         "outOfRange": false,
-                         "opacity": 1,
-                         "opacityPer": 100,
-                         "styles": [],
-                         "canEditName": false,
-                         "canRemove": false
-                     },
-                     {
-                         "groupId": null,
-                         "groupTitle": null,
-                         "metadata": "http://www.ideandalucia.es/catalogo/inspire/srv/spa/csw?Service=CSW&version=2.0.2&Request=GetRecordById&elementSetName=full&ID=5d0b5e73-c924-401d-ab72-ae0fa597f4be_200032_es",
-                         "infoLayer": true,
-                         "origen": "Inicial",
-                         "collapsed": true,
-                         "showStyles": false,
-                         "base": false,
-                         "visible": true,
-                         "id": "5_lineas_LLMM",
-                         "name": "lineas_LLMM",
-                         "title": "Líneas Limite de Andalucía",
-                         "legend": "https://www.juntadeandalucia.es/institutodeestadisticaycartografia/wms/lineaslimite?language=spa&version=1.1.0&service=WMS&request=GetLegendGraphic&layer=LineasLimite&format=image/png&STYLE=default",
-                         "outOfRange": false,
-                         "opacity": 1,
-                         "opacityPer": 100,
-                         "styles": [
-                             {
-                                 "Name": "default",
-                                 "Title": "default",
-                                 "LegendURL": [
-                                     {
-                                         "Format": "image/png",
-                                         "OnlineResource": "https://www.juntadeandalucia.es/institutodeestadisticaycartografia/wms/lineaslimite?language=spa&version=1.1.0&service=WMS&request=GetLegendGraphic&layer=lineas_LLMM&format=image/png&STYLE=default",
-                                         "size": [
-                                             143,
-                                             22
-                                         ]
-                                     }
-                                 ],
-                                 "id": "5_lineas_LLMM",
-                                 "selected": false
-                             },
-                             {
-                                 "Name": "default",
-                                 "Title": "default",
-                                 "LegendURL": [
-                                     {
-                                         "Format": "image/png",
-                                         "OnlineResource": "https://www.juntadeandalucia.es/institutodeestadisticaycartografia/wms/lineaslimite?language=spa&version=1.1.0&service=WMS&request=GetLegendGraphic&layer=LineasLimite&format=image/png&STYLE=default",
-                                         "size": [
-                                             160,
-                                             66
-                                         ]
-                                     }
-                                 ],
-                                 "id": "5_lineas_LLMM",
-                                 "selected": true
-                             }
-                         ],
-                         "canEditName": false,
-                         "canRemove": false
-                     }
-                   ]
-                }
-             }
-
-            let html = M.template.compileSync(ActiveLayersControl.TEMPLATE, templateVar)
-
-            // let html = M.template.compileSync(ActiveLayersControl.TEMPLATE, {
-            //     'vars': {
-            //         'overlayLayers': templateVariables
-            //     }
-            // });
-
-            console.log(templateVar)
-            
-
+            let html = M.template.compileSync(ActiveLayersControl.TEMPLATE, this.buildTemplateVar(templateVariables))
             //Antes de eliminar lista anterior sortable de capas activas
             if (this.sortableList) {
                 this.sortableList.destroy();
@@ -659,4 +495,31 @@ export default class ActiveLayersControl extends ManageLayersControl {
             });
         } */
 
+    buildTemplateVar(templateVariables) {
+        this.mapeaOverlayLayers = []
+        this.mapeaLayerGroup = []
+        for (let index = 0; index < templateVariables.length; index++) {
+            const element = templateVariables[index];
+            if (element.groupId == null) {
+                this.mapeaOverlayLayers.push(element)
+            } else {
+                if (this.mapeaLayerGroup.findIndex(x => x.id === element.groupId) === -1) {
+                    this.mapeaLayerGroup.push({
+                        id: element.groupId,
+                        title: element.groupTitle,
+                        overlayLayers: [element]
+                    })
+                } else {
+                    let overlayLayers = this.mapeaLayerGroup[this.mapeaLayerGroup.findIndex(x => x.id === element.groupId)].overlayLayers
+                    overlayLayers.push(element)
+                }
+            }
+        }
+        return {
+            vars: {
+                layersGroups: this.mapeaLayerGroup,
+                overlayLayers: this.mapeaOverlayLayers
+            }
+        }
+    }
 }
