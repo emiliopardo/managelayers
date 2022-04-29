@@ -71,6 +71,12 @@ export default class ActiveLayersControl extends ManageLayersControl {
         //Contador auxiliar para establecer ids genericos para capas que no tenan
         this.countID_ = 0;
 
+        //Id y titulo por defecto del grupo Otras Capas
+        this.defaultIdGroup = 'others'
+        this.defaultTitleGroup = 'Otras Capas'
+
+        this.templateVariables
+
         // FUNCIONES a eventos para poder eliminarlos después
         this.boundClickLayer_ = evt => this.clickLayer(evt);
     }
@@ -81,22 +87,35 @@ export default class ActiveLayersControl extends ManageLayersControl {
     }
 
     clickButtonGroup(evt) {
-        let group = evt.target.parentNode.getAttribute("data-group")
+        let groupId = evt.target.parentNode.getAttribute("data-group")
         evt.target.classList.toggle("g-cartografia-flecha-arriba2")
         evt.target.classList.toggle("g-cartografia-flecha-abajo2")
-        if (group != "otrasCapas") {
-            let selectedGroup = this.mapeaLayerGroup.find(x => x.id === group)
-            let layersInGroup = selectedGroup.overlayLayers
-            for (let index = 0; index < layersInGroup.length; index++) {
-                const element = layersInGroup[index];
-                document.getElementById("titleTocLayer_" + element.id).classList.toggle("dNone");
-                document.getElementById("titleTocLayer_" + element.id).classList.toggle("visible");
-            }
+        let selectedGroup = this.mapeaLayerGroup.find(x => x.id === groupId)
+        let layersInGroup = selectedGroup.overlayLayers
+        for (let index = 0; index < layersInGroup.length; index++) {
+            const element = layersInGroup[index];
+            document.getElementById("tocLayer_" + element.id).classList.toggle("dNone");
+            document.getElementById("tocLayer_" + element.id).classList.toggle("visible");
+        }
+        this.groupsVisibleStatus(groupId)
+    }
+
+    groupsVisibleStatus(groupId) {
+        if (this.mapeaLayerGroup[this.mapeaLayerGroup.findIndex(x => x.id === groupId)].collapsed == false) {
+            this.mapeaLayerGroup[this.mapeaLayerGroup.findIndex(x => x.id === groupId)].collapsed = true;
         } else {
-            for (let index = 0; index < this.mapeaOverlayLayers.length; index++) {
-                const element = this.mapeaOverlayLayers[index];
-                document.getElementById("titleTocLayer_" + element.id).classList.toggle("dNone");
-                document.getElementById("titleTocLayer_" + element.id).classList.toggle("visible");
+            this.mapeaLayerGroup[this.mapeaLayerGroup.findIndex(x => x.id === groupId)].collapsed = false;
+        }
+        this.templateVar.vars.layersGroups = this.mapeaLayerGroup
+        this.templateVariables
+        for (let index = 0; index < this.templateVariables.length; index++) {
+            const element = this.templateVariables[index];
+            if (element.groupId == groupId) {
+                if (element.hide == false) {
+                    element.hide = true
+                } else {
+                    element.hide = false;
+                }
             }
         }
     }
@@ -170,6 +189,7 @@ export default class ActiveLayersControl extends ManageLayersControl {
                         }
                         layer.setVisible(!layer.isVisible());
                     }
+                    this.updateLayerVisible(id)
                 }
 
                 //Metadatos
@@ -219,6 +239,14 @@ export default class ActiveLayersControl extends ManageLayersControl {
                     this.resetOptionsManageLayers(layer);
                     this.removeLayers(layer);
                 }
+
+                for (let index = 0; index < this.mapeaLayerGroup.length; index++) {
+                    const element = this.mapeaLayerGroup[index];
+                    if (!element.visible) {
+                        document.getElementById('tocGroup_' + element.id).classList.toggle('dNobe')
+                    }
+                }
+
             } else {
                 //logica para evento click en botones de grupos
                 this.clickButtonGroup(evt)
@@ -232,6 +260,18 @@ export default class ActiveLayersControl extends ManageLayersControl {
         if (!M.utils.isNullOrEmpty(id)) {
             this.getImpl().moveLayer(id, oldIndex, newIndex);
         }
+    }
+
+    updateLayerVisible(id) {
+        for (let index = 0; index < this.templateVariables.length; index++) {
+            const element = this.templateVariables[index];
+            if (element.id == id) {
+                if (element.visible == true) {
+                    element.visible = false
+                } else { element.visible = true }
+            }
+        }
+        this.templateVariables
     }
 
     /**
@@ -255,7 +295,14 @@ export default class ActiveLayersControl extends ManageLayersControl {
     renderPanel() {
         this.activateLoading();
         this.getTemplateVariables_().then((templateVariables) => {
-            let html = M.template.compileSync(ActiveLayersControl.TEMPLATE, this.buildTemplateVar(templateVariables))
+            if (!this.templateVariables) {
+                this.templateVariables = templateVariables
+            }
+            //se generan leyendas capas vectoriales
+            this.checkTemplateVaribles(templateVariables)
+            this.setVectorLegend(this.templateVariables)
+            this.templateVar = this.buildTemplateVar(this.templateVariables)
+            let html = M.template.compileSync(ActiveLayersControl.TEMPLATE, this.templateVar)
             //Antes de eliminar lista anterior sortable de capas activas
             if (this.sortableList) {
                 this.sortableList.destroy();
@@ -287,7 +334,6 @@ export default class ActiveLayersControl extends ManageLayersControl {
                 action.addEventListener('click', this.boundClickLayer_);
             });
             this.deactivateLoading();
-
         });
 
     }
@@ -350,12 +396,19 @@ export default class ActiveLayersControl extends ManageLayersControl {
                 groupId = group.id;
                 groupTitle = group.title
             }
+            else {
+                groupId = this.defaultIdGroup;
+                groupTitle = this.defaultTitleGroup;
+            }
+
+            // this.setLegend(layer)
 
             let result = {
                 'groupId': groupId,
                 'groupTitle': groupTitle,
                 'metadata': (!M.utils.isNullOrEmpty(metadata)),
                 'infoLayer': infoLayer,
+                'hide': true,
                 'origen': layer.options.origen,
                 'collapsed': (configToc.collapsed === true),
                 'showStyles': (configToc.showStyles === true),
@@ -365,6 +418,7 @@ export default class ActiveLayersControl extends ManageLayersControl {
                 'name': layer.name,
                 'title': layerTitle,
                 'legend': layer.getLegendURL(),
+                //legend: this.setLegend(layer),
                 'outOfRange': !layer.inRange(),
                 'opacity': layer.getOpacity(),
                 'opacityPer': layer.getOpacity() * 100,
@@ -495,31 +549,155 @@ export default class ActiveLayersControl extends ManageLayersControl {
             });
         } */
 
+    arraymove(arr, fromIndex, toIndex) {
+        let element = arr[fromIndex];
+        arr.splice(fromIndex, 1);
+        arr.splice(toIndex, 0, element);
+    }
+
     buildTemplateVar(templateVariables) {
-        this.mapeaOverlayLayers = []
         this.mapeaLayerGroup = []
         for (let index = 0; index < templateVariables.length; index++) {
             const element = templateVariables[index];
-            if (element.groupId == null) {
-                this.mapeaOverlayLayers.push(element)
+
+
+
+            if (this.mapeaLayerGroup.findIndex(x => x.id === element.groupId) === -1) {
+                this.mapeaLayerGroup.push({
+                    id: element.groupId,
+                    title: element.groupTitle,
+                    collapsed: false,
+                    overlayLayers: [element]
+                })
             } else {
-                if (this.mapeaLayerGroup.findIndex(x => x.id === element.groupId) === -1) {
-                    this.mapeaLayerGroup.push({
-                        id: element.groupId,
-                        title: element.groupTitle,
-                        overlayLayers: [element]
-                    })
-                } else {
-                    let overlayLayers = this.mapeaLayerGroup[this.mapeaLayerGroup.findIndex(x => x.id === element.groupId)].overlayLayers
-                    overlayLayers.push(element)
+                let overlayLayers = this.mapeaLayerGroup[this.mapeaLayerGroup.findIndex(x => x.id === element.groupId)].overlayLayers
+                overlayLayers.push(element)
+            }
+
+        }
+        //Si existe el grupo otras Capas se mueve al último lugar
+        if (this.mapeaLayerGroup.findIndex(x => x.id === this.defaultIdGroup) != -1) {
+            this.arraymove(this.mapeaLayerGroup, this.mapeaLayerGroup.findIndex(x => x.id === this.defaultIdGroup), this.mapeaLayerGroup.length - 1)
+        }
+
+        let result;
+
+        // si existe el grupo de capas por defecto y hay mas de un grupo
+        if (this.mapeaLayerGroup.findIndex(x => x.id === this.defaultIdGroup) != -1 && this.mapeaLayerGroup.length > 1) {
+            result = {
+                vars: {
+                    layersGroups: this.mapeaLayerGroup
                 }
             }
         }
-        return {
-            vars: {
-                layersGroups: this.mapeaLayerGroup,
-                overlayLayers: this.mapeaOverlayLayers
+        // en caso de que solo exista el grupo por defecto
+        else if (this.mapeaLayerGroup.findIndex(x => x.id === this.defaultIdGroup) != -1 && this.mapeaLayerGroup.length == 1) {
+            result = {
+                vars: {
+                    overlayLayers: this.mapeaLayerGroup[this.mapeaLayerGroup.findIndex(x => x.id === this.defaultIdGroup)].overlayLayers
+                }
             }
+        }
+        // en caso de que no exista grupo por defecto pero si existan grupos
+        else if ((this.mapeaLayerGroup.findIndex(x => x.id === this.defaultIdGroup) == -1 && this.mapeaLayerGroup.length >= 1)) {
+            result = {
+                vars: {
+                    layersGroups: this.mapeaLayerGroup
+                }
+            }
+        }
+        // no existen capas de overlay
+        else {
+            result = {
+                vars: null
+            }
+        }
+        return result
+    }
+
+    checkTemplateVaribles(templateVariables) {
+        if (templateVariables.length - this.templateVariables.length < 0) {
+            for (let index = 0; index < this.templateVariables.length; index++) {
+                const element = this.templateVariables[index];
+                if (templateVariables.findIndex(x => x.id === element.id) == -1) {
+                    this.templateVariables.splice(index, 1)
+                }
+            }
+        }
+        if (templateVariables.length - this.templateVariables.length > 0) {
+            for (let index = 0; index < templateVariables.length; index++) {
+                const element = templateVariables[index];
+                if (this.templateVariables.findIndex(x => x.id === element.id) == -1) {
+                    if (this.templateVariables.findIndex(x => x.groupId === element.groupId) == -1) {
+                        element.hide = true
+                    } else {
+                        element.hide = this.templateVariables[this.templateVariables.findIndex(x => x.groupId === element.groupId)].hide
+                    }
+                    this.templateVariables.push(element)
+                }
+            }
+        }
+    }
+
+    MakeQuerablePromise(promise) {
+        // Don't modify any promise that has been already modified.
+        if (promise.isFulfilled) return promise;
+        // Set initial state
+        var isPending = true;
+        var isRejected = false;
+        var isFulfilled = false;
+        // Observe the promise, saving the fulfillment in a closure scope.
+        var result = promise.then(
+            function (v) {
+                isFulfilled = true;
+                isPending = false;
+                return v;
+            },
+            function (e) {
+                isRejected = true;
+                isPending = false;
+                throw e;
+            }
+        );
+        result.isFulfilled = () => { return isFulfilled; };
+        result.isPending = () => { return isPending; };
+        result.isRejected = () => { return isRejected; };
+        return result;
+    }
+
+    checkLayerTypeVector(layer) {
+        let type = false
+        if (layer instanceof M.layer.Vector) {
+            type = true
+        }
+        return type
+    }
+
+    //generación de leyenda capas vectoriales
+    setVectorLegend(templateVariables) {
+        let legend
+        for (let index = 0; index < templateVariables.length; index++) {
+            const element = templateVariables[index];
+            let layer = this.findLayerById(element.id);
+            layer.on(M.evt.CHANGE_STYLE, () => {
+                if (this.checkLayerTypeVector(layer)) {
+                    let estilo = layer.getStyle();
+                    legend = estilo.toImage();
+                    if (legend instanceof Promise) {
+                        let myPromise = this.MakeQuerablePromise(legend);
+                        myPromise.then((data) => {
+                            const optionsTocLayer = document.getElementById('optionsTocLayer_' + layer.id);
+                            if (optionsTocLayer != undefined) {
+                                let image = optionsTocLayer.getElementsByTagName('img')[0]
+                                image.src = data
+                            }
+                            layer.setLegendURL(data)
+                        })
+                    } else {
+                        layer.setLegendURL(legend)
+                    }
+                }
+            })
         }
     }
 }
