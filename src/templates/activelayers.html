@@ -7,11 +7,13 @@
 				<div data-group="{{id}}" class="layer-group-name">
 					<!-- <button data-id="{{id}}"-->
 					<button
-						class="m-accion-activegroups-collapse {{#if collapsed}}g-cartografia-flecha-abajo2{{else}}g-cartografia-flecha-arriba2{{/if}} button-group"
+						class="m-accion-activegroups-collapse {{#if collapsed}}g-cartografia-flecha-abajo2{{else}}g-cartografia-flecha-arriba2{{/if}}"
 						title="Listado de capas del grupo"></button>
 					<span>{{title}}</span>
+					<button class="m-accion-activegroups-show-hide-layers {{#if layerVisibility}}show{{else}}hide{{/if}}" title="Mostrar / Ocultar todas las capas del grupo">
+					</button>
 				</div>
-			</div>
+			</div>			
 			{{#each overlayLayers}}
 			<div id="tocLayer_{{id}}" data-id="{{id}}" class="toc-item-layer {{#if hide}} dNone{{/if}}">
 				<div id="titleTocLayer_{{id}}"
@@ -103,7 +105,7 @@
 			{{/each}}
 		</div>
 		{{/each}}
-		
+
 		{{else}}
 		{{#each overlayLayers}}
 		<div id="tocLayer_{{id}}" data-id="{{id}}" class="toc-item-layer">
