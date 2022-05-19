@@ -75,8 +75,6 @@ export default class ActiveLayersControl extends ManageLayersControl {
         this.defaultIdGroup = 'others'
         this.defaultTitleGroup = 'Otras Capas'
 
-        this.templateVariables
-
         // FUNCIONES a eventos para poder eliminarlos después
         this.boundClickLayer_ = evt => this.clickLayer(evt);
     }
@@ -88,16 +86,84 @@ export default class ActiveLayersControl extends ManageLayersControl {
 
     clickButtonGroup(evt) {
         let groupId = evt.target.parentNode.getAttribute("data-group")
-        evt.target.classList.toggle("g-cartografia-flecha-arriba2")
-        evt.target.classList.toggle("g-cartografia-flecha-abajo2")
-        let selectedGroup = this.mapeaLayerGroup.find(x => x.id === groupId)
-        let layersInGroup = selectedGroup.overlayLayers
-        for (let index = 0; index < layersInGroup.length; index++) {
-            const element = layersInGroup[index];
-            document.getElementById("tocLayer_" + element.id).classList.toggle("dNone");
-            document.getElementById("tocLayer_" + element.id).classList.toggle("visible");
+        let show = true
+        //logica para cuando se pincha en el boton de ocultar mostrar capas de grupo
+        if (evt.target.classList.contains("m-accion-activegroups-show-hide-layers")) {
+            if (evt.target.classList.contains("show")) {
+                evt.target.classList.remove("show")
+                evt.target.classList.add("hide")
+                show = false
+            } else {
+                evt.target.classList.add("show")
+                evt.target.classList.remove("hide")
+            }
+            this.showLayersInGroup(groupId, show)
         }
-        this.groupsVisibleStatus(groupId)
+        //lógica para cuando se pincha en el boton mostrar ocultar capas del grupo
+        else if (evt.target.classList.contains("m-accion-activegroups-collapse")) {
+            evt.target.classList.toggle("g-cartografia-flecha-arriba2")
+            evt.target.classList.toggle("g-cartografia-flecha-abajo2")
+            let selectedGroup = this.mapeaLayerGroup.find(x => x.id === groupId)
+            let layersInGroup = selectedGroup.overlayLayers
+            for (let index = 0; index < layersInGroup.length; index++) {
+                const element = layersInGroup[index];
+                document.getElementById("tocLayer_" + element.id).classList.toggle("dNone");
+                document.getElementById("tocLayer_" + element.id).classList.toggle("visible");
+            }
+            this.groupsVisibleStatus(groupId)
+        }
+    }
+
+    checkGroupLayerVisibility(groupId) {
+        let result = true;
+        //console.log(groupId)
+        let layers = this.filterGroups(groupId)
+        //console.log(layers)
+        let uniqueValues = this.checkUniqueValuesGroupLayerVisibility(layers)
+        //console.log(uniqueValues)
+        if (uniqueValues.length > 1) {
+            //si es mayor que 1 es que hay true o false, por defecto será true
+            result = true
+        } else {
+            // si solo hay un valor unico lo cogemos
+            result = uniqueValues[0]
+        }
+        return result
+    }
+
+    //selecciono solo las capas que pertencen a un grupo concreto
+    filterGroups(groupId) {
+        return this.templateVariables.filter(obj => {
+            return obj.groupId === groupId
+        })
+    }
+
+    //obtengo los valores distintos de la propiedad visible de un array de capas
+    checkUniqueValuesGroupLayerVisibility(layers) {
+        return [...new Set(layers.map(item => item.visible))];
+    }
+
+    //oculto o muestro las capas de un grupo de this.templateVariables
+    showLayersInGroup(groupId, show) {
+        for (let index = 0; index < this.templateVariables.length; index++) {
+            const element = this.templateVariables[index];
+            if (element.groupId === groupId) {
+                element.visible = show
+                this.updateTemplateLayerChecked(element.id)
+            }
+        }
+    }
+
+    //cambio el estado del checkbox Ver/Ocultar capa
+    updateTemplateLayerChecked(layerId){
+        let layerCheckBox = document.getElementById("titleTocLayer_"+layerId).getElementsByTagName( 'input' )[0]
+        if (layerCheckBox.checked == true){
+            layerCheckBox.checked = false;
+        } else{
+            layerCheckBox.checked = true;
+        }
+        //se actualizan las capas visibles en el mapa
+        this.map_.getLayers()[this.map_.getLayers().findIndex(x => x.id === layerId)].setVisible(this.templateVariables[this.templateVariables.findIndex(x => x.id === layerId)].visible)
     }
 
     groupsVisibleStatus(groupId) {
@@ -107,7 +173,6 @@ export default class ActiveLayersControl extends ManageLayersControl {
             this.mapeaLayerGroup[this.mapeaLayerGroup.findIndex(x => x.id === groupId)].collapsed = false;
         }
         this.templateVar.vars.layersGroups = this.mapeaLayerGroup
-        this.templateVariables
         for (let index = 0; index < this.templateVariables.length; index++) {
             const element = this.templateVariables[index];
             if (element.groupId == groupId) {
@@ -148,7 +213,6 @@ export default class ActiveLayersControl extends ManageLayersControl {
                 //Obtener control y opciones del toc del elemento seleccionado
                 let ctolContainer = this.getControlContainer_();
                 let itemTocOptions = this.getQuerySelectorScapeCSS(ctolContainer, '#optionsTocLayer_', id);
-
                 //Mostrar/Ocultar opciones de capa
                 if (itemTarget.classList.contains('m-accion-activelayers-collapse')) {
                     //Actualizar configuracion estado del toc
@@ -191,17 +255,14 @@ export default class ActiveLayersControl extends ManageLayersControl {
                     }
                     this.updateLayerVisible(id)
                 }
-
                 //Metadatos
                 else if (itemTarget.classList.contains('m-accion-activelayers-metadata')) {
                     //TODO: PTE IMPLEMENTACION
-
                     if ((layer.type === M.layer.type.WMS) || (layer.type === M.layer.type.WFS)) {
                         this.getImpl().getMetadataLink(layer).then((metadataLink) => {
                             window.open(metadataLink, '_blank');
                         });
                     }
-
                 }
                 //Informacion de la capa
                 else if (itemTarget.classList.contains('m-accion-activelayers-info')) {
@@ -231,7 +292,6 @@ export default class ActiveLayersControl extends ManageLayersControl {
                         this.getImpl().setLayerStyle(layer, position);
                         this.renderPanel();
                     }
-
                 }
                 //Eliminar
                 else if (itemTarget.classList.contains('m-accion-activelayers-remove')) {
@@ -246,7 +306,6 @@ export default class ActiveLayersControl extends ManageLayersControl {
                         document.getElementById('tocGroup_' + element.id).classList.toggle('dNobe')
                     }
                 }
-
             } else {
                 //logica para evento click en botones de grupos
                 this.clickButtonGroup(evt)
@@ -271,7 +330,6 @@ export default class ActiveLayersControl extends ManageLayersControl {
                 } else { element.visible = true }
             }
         }
-        this.templateVariables
     }
 
     /**
@@ -401,8 +459,6 @@ export default class ActiveLayersControl extends ManageLayersControl {
                 groupTitle = this.defaultTitleGroup;
             }
 
-            // this.setLegend(layer)
-
             let result = {
                 'groupId': groupId,
                 'groupTitle': groupTitle,
@@ -418,7 +474,6 @@ export default class ActiveLayersControl extends ManageLayersControl {
                 'name': layer.name,
                 'title': layerTitle,
                 'legend': layer.getLegendURL(),
-                //legend: this.setLegend(layer),
                 'outOfRange': !layer.inRange(),
                 'opacity': layer.getOpacity(),
                 'opacityPer': layer.getOpacity() * 100,
@@ -560,20 +615,18 @@ export default class ActiveLayersControl extends ManageLayersControl {
         for (let index = 0; index < templateVariables.length; index++) {
             const element = templateVariables[index];
 
-
-
             if (this.mapeaLayerGroup.findIndex(x => x.id === element.groupId) === -1) {
                 this.mapeaLayerGroup.push({
                     id: element.groupId,
                     title: element.groupTitle,
                     collapsed: false,
+                    layerVisibility: this.checkGroupLayerVisibility(element.groupId),
                     overlayLayers: [element]
                 })
             } else {
                 let overlayLayers = this.mapeaLayerGroup[this.mapeaLayerGroup.findIndex(x => x.id === element.groupId)].overlayLayers
                 overlayLayers.push(element)
             }
-
         }
         //Si existe el grupo otras Capas se mueve al último lugar
         if (this.mapeaLayerGroup.findIndex(x => x.id === this.defaultIdGroup) != -1) {
@@ -692,8 +745,10 @@ export default class ActiveLayersControl extends ManageLayersControl {
                                 image.src = data
                             }
                             layer.setLegendURL(data)
+                            element.legend=data
                         })
                     } else {
+                        element.legend=legend
                         layer.setLegendURL(legend)
                     }
                 }
